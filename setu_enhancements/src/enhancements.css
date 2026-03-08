@@ -1,0 +1,94 @@
+/* ═══════════════════════════════════════════════════════════════
+   src/styles/enhancements.css
+   Add @import of this file in your main index.css or App.tsx
+
+   Contains: focus styles, skip link, reduced motion, print
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Focus ring — keyboard navigation visibility ────────────── */
+/* WCAG 2.1 SC 2.4.7 — focus indicator must be visible         */
+/* :focus-visible targets keyboard nav only (not mouse clicks)  */
+:focus-visible {
+  outline: 2px solid #D4A03A;     /* gold accent — matches brand */
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Never suppress focus without providing an alternative */
+/* ❌ :focus { outline: none; }  — NEVER DO THIS */
+
+/* ── Reduced motion — respect OS accessibility setting ───────── */
+/* WCAG 2.1 SC 2.3.3 — users can disable animation             */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Stop GSAP animations — add .reduce-motion class to body */
+  /* and check it in GSAP components */
+}
+
+/* ── Print styles — useful if buyers print the page ─────────── */
+@media print {
+  /* Hide non-essential elements */
+  nav,
+  .whatsapp-button,
+  .noise-overlay,
+  canvas {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+}
+
+/* ── Selection color — matches brand ────────────────────────── */
+::selection {
+  background: rgba(212, 160, 58, 0.25);
+  color: #F7F8FB;
+}
+
+/* ── Scrollbar — minimal, on-brand ──────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B0F17;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(166, 176, 192, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 160, 58, 0.4);
+}
+
+/* ── Shimmer for lazy image placeholders ─────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* ── Smooth scroll — but only if user hasn't requested reduced ─ */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

@@ -1,0 +1,9 @@
+# robots.txt — Setu Overseas
+# Allow all crawlers to index the full site
+
+User-agent: *
+Allow: /
+Disallow: /assets/   # Bundled JS/CSS — no need to index
+
+# Sitemap location — helps Google find all pages
+Sitemap: https://www.setuoverseas.com/sitemap.xml

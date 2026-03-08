@@ -1,0 +1,78 @@
+# ═══════════════════════════════════════════════════════════════
+# netlify.toml — Setu Overseas Deployment Configuration
+# Commit this file to the root of your repository.
+# ═══════════════════════════════════════════════════════════════
+
+# ── Build settings ────────────────────────────────────────────
+[build]
+  command         = "npm run build"
+  publish         = "dist"
+  ignore          = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!*.md'"
+
+[build.environment]
+  NODE_VERSION  = "20"
+  NPM_FLAGS     = "--legacy-peer-deps"
+
+# ── SPA routing — serve index.html for all routes ────────────
+# Prevents 404 errors when users bookmark deep links or refresh
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+# ── Security headers — applied to all responses ───────────────
+[[headers]]
+  for = "/*"
+
+  [headers.values]
+    # Prevent clickjacking
+    X-Frame-Options = "SAMEORIGIN"
+
+    # Prevent MIME-type sniffing
+    X-Content-Type-Options = "nosniff"
+
+    # Control referrer information
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Restrict browser feature access
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+
+    # Content Security Policy
+    # Adjust script-src if you add Google Analytics or other 3rd-party scripts
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://plausible.io https://www.googletagmanager.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      img-src 'self' data: https:;
+      font-src 'self' https://fonts.gstatic.com;
+      connect-src 'self' https://plausible.io;
+      frame-ancestors 'none';
+    """
+
+    # HTTPS enforcement
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+# ── Cache static assets for 1 year (content-hashed by Vite) ──
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ── Cache images for 30 days ──────────────────────────────────
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
+
+# ── Cache fonts for 1 year ───────────────────────────────────
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ── Form notifications ────────────────────────────────────────
+# Netlify sends an email to this address on every form submission
+# Replace with the actual recipient email
+[[forms]]
+  name        = "inquiry"
+  destination = "setuoverseas586@gmail.com"
